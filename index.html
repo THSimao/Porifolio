@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Portfólio de Arthur Felix Campos Simão — estudante de TI, programação e suporte técnico.">
+<meta name="theme-color" content="#07111f">
+<title>Arthur Simão — Portfólio Kali Linux</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307111f'/%3E%3Cpath d='M18 14v36M46 14 21 34l27 16' fill='none' stroke='%2300c8ff' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  ::-webkit-scrollbar { display: none; }
+  * { scrollbar-width: none; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0a1220;
+    color: #c8d6e5;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+  }
+
+  /* ── Wallpaper ── */
+  #bg-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .vignette {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse 90% 80% at 50% 50%, transparent 25%, rgba(5,8,16,0.6) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* ── Kali Logo ── */
+  #kali-center {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    pointer-events: none;
+    text-align: center;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .kali-box {
+    display: inline-block;
+    border: 2.5px solid rgba(255,255,255,0.5);
+    padding: 6px 28px;
+    border-radius: 2px;
+    margin-top: -10px;
+  }
+
+  .kali-box span {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1.9rem;
+    color: white;
+    letter-spacing: 0.22em;
+    text-shadow: 0 0 30px rgba(255,255,255,0.3);
+  }
+
+  .kali-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.46rem;
+    color: rgba(255,255,255,0.38);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    display: block;
+  }
+
+  /* ── Taskbar ── */
+  #taskbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 32px;
+    background: rgba(5,8,16,0.97);
+    border-bottom: 1px solid rgba(74,159,245,0.12);
+    display: flex;
+    align-items: center;
+    padding: 0 14px 0 68px;
+    z-index: 200;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .tb-menu { display: flex; }
+
+  .tb-menu-item {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.76rem;
+    color: #8099b5;
+    padding: 3px 10px;
+    border-radius: 3px;
+    cursor: default;
+    transition: all .15s;
+  }
+  .tb-menu-item:hover { background: rgba(74,159,245,0.1); color: #c8d6e5; }
+
+  #tb-wins { display: flex; gap: 4px; margin-left: 12px; }
+
+  .tb-win-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 2px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    border: none;
+    background: rgba(74,159,245,0.18);
+    color: #4a9ff5;
+    border-bottom: 1px solid #4a9ff5;
+    transition: all .15s;
+  }
+  .tb-win-btn.minimized {
+    background: rgba(74,159,245,0.07);
+    color: #4a6080;
+    border-bottom: 1px solid transparent;
+  }
+
+  #tb-clock {
+    flex: 1;
+    text-align: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.73rem;
+    color: #c8d6e5;
+  }
+
+  .tb-tray { display: flex; align-items: center; gap: 10px; }
+
+  .tb-ws {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: #4a9ff5;
+    background: rgba(74,159,245,0.12);
+    border: 1px solid rgba(74,159,245,0.25);
+    padding: 1px 8px;
+    border-radius: 3px;
+  }
+
+  /* ── Left Dock ── */
+  #dock {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 58px;
+    background: rgba(5,8,16,0.96);
+    border-right: 1px solid rgba(74,159,245,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 38px;
+    padding-bottom: 14px;
+    z-index: 150;
+    backdrop-filter: blur(16px);
+  }
+
+  .dock-sep { width: 30px; height: 1px; background: rgba(74,159,245,0.18); margin: 6px 0; }
+  .dock-spacer { flex: 1; }
+
+  .dock-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 4px;
+    transition: all .2s;
+    position: relative;
+    color: #4a6080;
+  }
+  .dock-btn:hover { background: rgba(74,159,245,0.12); color: #7ab8f5; }
+  .dock-btn.open {
+    background: rgba(74,159,245,0.14);
+    border-color: rgba(74,159,245,0.4);
+    color: #4a9ff5;
+  }
+
+  .dock-dot {
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    display: none;
+  }
+  .dock-btn.open .dock-dot { display: block; }
+
+  #dock-tooltip {
+    position: fixed;
+    left: 64px;
+    background: rgba(10,15,26,0.96);
+    border: 1px solid rgba(74,159,245,0.25);
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: #c8d6e5;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 400;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    display: none;
+  }
+
+  /* ── Desktop Icons ── */
+  #desktop-icons {
+    position: fixed;
+    left: 68px;
+    top: 40px;
+    bottom: 0;
+    z-index: 5;
+  }
+
+  .desk-icon {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: default;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background .15s;
+    text-align: center;
+    width: 80px;
+  }
+  .desk-icon:hover { background: rgba(74,159,245,0.15); }
+
+  .desk-icon .di-ico { font-size: 1.8rem; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.9)); }
+  .desk-icon .di-lbl {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    color: white;
+    text-shadow: 0 1px 5px rgba(0,0,0,0.95);
+  }
+
+  /* ── Windows ── */
+  #win-layer {
+    position: fixed;
+    left: 58px; top: 32px;
+    right: 0; bottom: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .win {
+    position: absolute;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.75), 0 0 0 1px rgba(74,159,245,0.15);
+    background: #0e1520;
+    display: none;
+    pointer-events: all;
+  }
+  .win.visible { display: block; }
+
+  .win-bar {
+    background: #111827;
+    border-bottom: 1px solid rgba(74,159,245,0.15);
+    height: 34px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: grab;
+    user-select: none;
+  }
+  .win-bar:active { cursor: grabbing; }
+
+  .wbtn {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: filter .15s;
+  }
+  .wbtn:hover { filter: brightness(1.3); }
+  .wbtn-close { background: #ff5f56; }
+  .wbtn-min   { background: #ffbd2e; }
+  .wbtn-max   { background: #27c93f; }
+
+  .win-ttl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #6b7a96;
+    margin-left: 4px;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .win-body { overflow: hidden; }
+
+  /* ── Terminal ── */
+  .term {
+    background: #070c14;
+    height: 100%;
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    overflow-y: auto;
+    line-height: 1.65;
+  }
+  .tg { color: #2ecc71; }
+  .tb { color: #4a9ff5; }
+  .tm { color: #6b7a96; }
+  .tt { color: #c8d6e5; }
+  .td { color: #8099b5; }
+  .ty { color: #f39c12; }
+  .tp { color: #e056fd; }
+
+  .cur {
+    display: inline-block;
+    width: 8px; height: 1em;
+    background: #4a9ff5;
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+  }
+
+  /* ── Skills ── */
+  .skill-row { margin-bottom: 14px; }
+  .skill-head { display: flex; justify-content: space-between; margin-bottom: 5px; }
+  .s-name { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #c8d6e5; }
+  .s-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 1px 8px;
+    border-radius: 3px;
+  }
+  .s-track { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+  .s-fill {
+    height: 100%;
+    border-radius: 2px;
+    width: 0%;
+    transition: width 1.2s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── File Manager ── */
+  .fm { background: #0e1520; height: 100%; display: flex; flex-direction: column; }
+  .fm-bar {
+    background: #111827;
+    border-bottom: 1px solid rgba(74,159,245,0.1);
+    padding: 6px 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .fm-nav {
+    background: rgba(74,159,245,0.08);
+    border: 1px solid rgba(74,159,245,0.2);
+    border-radius: 4px;
+    color: #6b7a96;
+    width: 26px; height: 26px;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .fm-path-box {
+    flex: 1;
+    background: rgba(5,8,16,0.8);
+    border: 1px solid rgba(74,159,245,0.15);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: #6b7a96;
+  }
+  .fm-cols {
+    display: grid;
+    grid-template-columns: 28px 1fr 60px 110px;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(8,12,22,0.9);
+    border-bottom: 1px solid rgba(74,159,245,0.08);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: #3a5070;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .fm-list { flex: 1; overflow-y: auto; }
+  .fm-row {
+    display: grid;
+    grid-template-columns: 28px 1fr 60px 110px;
+    gap: 8px;
+    padding: 7px 14px;
+    cursor: default;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    transition: background .15s;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+  }
+  .fm-row:hover { background: rgba(74,159,245,0.06); }
+  .fm-row.sel { background: rgba(74,159,245,0.12); }
+  .fn-dir { color: #4a9ff5; }
+  .fn-file { color: #c8d6e5; }
+  .fm-meta { color: #4a6080; font-size: 0.7rem; }
+  .fm-status {
+    background: #111827;
+    border-top: 1px solid rgba(74,159,245,0.1);
+    padding: 6px 14px;
+    display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #4a6080;
+    min-height: 30px;
+  }
+
+  /* ── Text Editor ── */
+  .te { background: #0e1520; height: 100%; display: flex; flex-direction: column; }
+  .te-menu {
+    background: #111827;
+    border-bottom: 1px solid rgba(74,159,245,0.1);
+    padding: 5px 14px;
+    display: flex; gap: 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    color: #6b7a96;
+    cursor: default;
+  }
+  .te-body {
+    flex: 1;
+    padding: 20px 24px;
+    overflow-y: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.85;
+    color: #c8d6e5;
+  }
+  .te-footer {
+    background: #111827;
+    border-top: 1px solid rgba(74,159,245,0.1);
+    padding: 4px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: #4a6080;
+  }
+
+  /* ── Contact ── */
+  .cf-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: #6b7a96;
+    margin-bottom: 5px;
+    display: block;
+  }
+  .cf-inp {
+    width: 100%;
+    background: rgba(5,8,16,0.9);
+    border: 1px solid rgba(74,159,245,0.2);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: #c8d6e5;
+    outline: none;
+    transition: border-color .2s;
+    margin-bottom: 10px;
+  }
+  .cf-inp:focus { border-color: rgba(74,159,245,0.55); }
+  .cf-btn {
+    width: 100%;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 11px;
+    border-radius: 4px;
+    border: none;
+    background: linear-gradient(135deg, #1a6fd9, #4a9ff5);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 16px rgba(74,159,245,0.35);
+    transition: box-shadow .2s;
+  }
+  .cf-btn:hover { box-shadow: 0 0 28px rgba(74,159,245,0.65); }
+
+  .cf-ok {
+    display: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: #2ecc71;
+    background: rgba(46,204,113,0.1);
+    border: 1px solid rgba(46,204,113,0.3);
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  /* ── Context Menu ── */
+  #ctx {
+    position: fixed;
+    background: rgba(8,13,24,0.97);
+    border: 1px solid rgba(74,159,245,0.2);
+    border-radius: 6px;
+    padding: 4px 0;
+    z-index: 600;
+    min-width: 184px;
+    box-shadow: 0 10px 36px rgba(0,0,0,0.65);
+    display: none;
+  }
+  .ctx-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 7px 16px;
+    background: transparent;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    color: #c8d6e5;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .ctx-btn:hover { background: rgba(74,159,245,0.12); }
+  .ctx-sep { height: 1px; background: rgba(74,159,245,0.1); margin: 3px 0; }
+
+  /* ── Animations ── */
+  @keyframes float {
+    0%,100% { transform: translate(-50%,-50%) translateY(0); }
+    50%      { transform: translate(-50%,-50%) translateY(-12px); }
+  }
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0; }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Color row ── */
+  .clr-row { display: flex; gap: 3px; margin-top: 5px; }
+  .clr { width: 18px; height: 18px; border-radius: 2px; }
+</style>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- Convert the monochrome launcher images into white silhouettes with real rendered alpha. -->
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;pointer-events:none">
+  <defs>
+    <filter id="launcher-alpha" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -0.2126 -0.7152 -0.0722 0 1"/>
+      <feComponentTransfer><feFuncA type="linear" slope="1.05" intercept="-0.05"/></feComponentTransfer>
+    </filter>
+  </defs>
+</svg>
+
+<a class="skip-link" href="#win-layer">Ir para o conteúdo</a>
+
+<!-- ── Background ── -->
+<canvas id="bg-canvas"></canvas>
+<div class="vignette"></div>
+<div class="scanlines"></div>
+
+<!-- ── Kali Dragon (center) ── -->
+<div id="kali-center">
+  <svg width="250" height="208" viewBox="0 0 340 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M200 240C200 240 175 230 160 210C145 190 140 165 145 145C150 125 160 110 170 95C180 80 185 65 178 50"
+      stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M178 50C178 50 185 42 195 38C205 34 215 35 222 38C229 41 233 47 232 54C231 61 225 66 218 68C224 70 228 75 226 81C224 87 217 90 210 88"
+      stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M210 88C206 94 200 97 195 95C190 93 188 88 190 83C192 78 198 76 204 78"
+      stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="216" cy="49" r="2.5" fill="white"/>
+    <path d="M195 38C195 38 188 30 175 22C162 14 142 8 120 6C98 4 75 8 60 15C45 22 35 32 38 40C41 48 55 50 68 48"
+      stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M175 22C175 22 168 18 158 20C148 22 140 30 142 38C144 46 152 48 160 46"
+      stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M200 240C200 240 210 248 205 258C200 268 188 270 178 265C168 260 165 250 170 242C175 234 185 232 190 236"
+      stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <path d="M155 145C140 130 128 118 125 100C122 82 130 68 145 62"
+      stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M145 145C130 150 115 155 108 165C101 175 105 188 115 192"
+      stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M115 192C115 192 110 200 108 208" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <path d="M115 192C118 200 120 207 118 214" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <path d="M115 192C122 198 126 205 124 212" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <div class="kali-box"><span>KALI</span></div>
+  <span class="kali-sub">BY OFFENSIVE SECURITY</span>
+</div>
+
+<!-- ── Desktop Icons ── -->
+<div id="desktop-icons">
+  <div class="desk-icon skills-desktop" style="left:14px;top:428px" ondblclick="openWin('skills')">
+    <img class="di-ico supplied-icon" src="assets/habilidades.jpg" alt="" width="44" height="44"><span class="di-lbl">Habilidades</span>
+  </div>
+  <div class="desk-icon" style="left:14px;top:18px" ondblclick="openWin('neofetch')">
+    <span class="di-ico">👤</span><span class="di-lbl">User</span>
+  </div>
+  <div class="desk-icon" style="left:14px;top:100px" ondblclick="openWin('projects')">
+    <span class="di-ico">🗂️</span><span class="di-lbl">GitHub</span>
+  </div>
+  <div class="desk-icon" style="left:14px;top:182px" ondblclick="openWin('education')">
+    <span class="di-ico">📄</span><span class="di-lbl">Currículo.pdf</span>
+  </div>
+  <div class="desk-icon" style="left:14px;top:264px" ondblclick="openWin('contact')">
+    <span class="di-ico">✉️</span><span class="di-lbl">Contato</span>
+  </div>
+  <div class="desk-icon kali-tools-desktop" style="left:14px;top:346px" ondblclick="openWin('tools')">
+    <img class="di-ico supplied-icon" src="assets/terminal.jpg" alt="" width="44" height="44"><span class="di-lbl">Terminal</span>
+  </div>
+</div>
+
+<!-- ── Window Layer ── -->
+<div id="win-layer">
+
+  <!-- Neofetch window -->
+  <div class="win" id="win-neofetch" style="width:640px;left:80px;top:50px">
+    <div class="win-bar" data-win="neofetch">
+      <button class="wbtn wbtn-close" onclick="closeWin('neofetch')" aria-label="Fechar janela"></button>
+      <button class="wbtn wbtn-min"   onclick="minWin('neofetch')" aria-label="Minimizar janela"></button>
+      <button class="wbtn wbtn-max" aria-label="Maximizar janela"></button>
+      <span class="win-ttl">User — arthur@kali: ~</span>
+    </div>
+    <div class="win-body" style="height:390px">
+      <div class="term" id="nf-body" style="display:flex;gap:22px;">
+        <pre style="color:#4a9ff5;font-size:0.7rem;line-height:1.55;flex-shrink:0;padding-top:2px;opacity:0;transition:opacity .4s" id="nf-art">       .
+      .:
+    ...:
+   ....  .
+  ..... ..
+ ...... ..
+ .......:
+  ......
+   ....
+    ...
+     ..
+      .</pre>
+        <div style="opacity:0;transition:opacity .5s .2s" id="nf-info">
+          <p><span class="tg" style="font-weight:700">arthur</span><span class="tm">@</span><span class="tb" style="font-weight:700">kali</span></p>
+          <p class="tm" style="margin-bottom:8px">──────────────────────────</p>
+          <p><span class="tb" style="display:inline-block;min-width:82px">OS</span><span class="tm">: </span><span class="tt">Kali Portfolio 3.0 amd64</span></p>
+          <p><span class="tb" style="display:inline-block;min-width:72px">Host</span><span class="tm">: </span><span class="tt">COTEMIG — Belo Horizonte, MG</span></p>
+          <p><span class="tb" style="display:inline-block;min-width:72px">Kernel</span><span class="tm">: </span><span class="tt">Arthur Felix Campos Simão</span></p>
+          <p><span class="tb" style="display:inline-block;min-width:72px">Uptime</span><span class="tm">: </span><span class="tt">Estudante desde Fev/2025</span></p>
+          <p><span class="tb" style="display:inline-block;min-width:82px">Role</span><span class="tm">: </span><span class="tt">Infraestrutura · Redes · Suporte Técnico</span></p>
+          <p><span class="tb" style="display:inline-block;min-width:82px">Stack</span><span class="tm">: </span><span class="tt">C# · Python · HTML · CSS</span></p>
+          <p><span class="tb" style="display:inline-block;min-width:82px">Systems</span><span class="tm">: </span><span class="tt">Windows · Ubuntu · Kali Linux</span></p>
+          <p><span class="tb" style="display:inline-block;min-width:82px">Network</span><span class="tm">: </span><span class="tt">DNS · DHCP · MikroTik · UniFi</span></p>
+          <p><span class="tb" style="display:inline-block;min-width:82px">Security</span><span class="tm">: </span><span class="tt">Fundamentos · Ambiente de estudos</span></p>
+          <p><span class="tb" style="display:inline-block;min-width:82px">Goal</span><span class="tm">: </span><span class="tt">Estágio / Jovem Aprendiz em TI</span></p>
+          <p><span class="tb" style="display:inline-block;min-width:82px">Contact</span><span class="tm">: </span><span class="tt">arthursimaofc@gmail.com</span></p>
+          <p style="margin-bottom:12px"><span class="tb" style="display:inline-block;min-width:82px">Phone</span><span class="tm">: </span><span class="tt">+55 31 99478-5345</span></p>
+          <div class="clr-row">
+            <div class="clr" style="background:#0a1628"></div><div class="clr" style="background:#163d6e"></div>
+            <div class="clr" style="background:#4a9ff5"></div><div class="clr" style="background:#00c9ff"></div>
+            <div class="clr" style="background:#2ecc71"></div><div class="clr" style="background:#f39c12"></div>
+            <div class="clr" style="background:#e74c3c"></div><div class="clr" style="background:#e056fd"></div>
+          </div>
+          <div class="clr-row" style="margin-bottom:14px">
+            <div class="clr" style="background:#c8d6e5"></div><div class="clr" style="background:#8099b5"></div>
+            <div class="clr" style="background:#6b7a96"></div><div class="clr" style="background:#4a6080"></div>
+            <div class="clr" style="background:#2a3a52"></div><div class="clr" style="background:#1e2d4a"></div>
+            <div class="clr" style="background:#111827"></div><div class="clr" style="background:#0a0f1a"></div>
+          </div>
+          <p class="kali-prompt"><span class="tb">┌──(</span><span class="tg">arthur㉿kali</span><span class="tb">)-[</span><span class="tt">~</span><span class="tb">]</span><br><span class="tb">└─</span><span class="tg">$</span> <span class="cur"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skills window -->
+  <div class="win" id="win-skills" style="width:680px;left:160px;top:60px">
+    <div class="win-bar" data-win="skills">
+      <button class="wbtn wbtn-close" onclick="closeWin('skills')" aria-label="Fechar janela"></button>
+      <button class="wbtn wbtn-min"   onclick="minWin('skills')" aria-label="Minimizar janela"></button>
+      <button class="wbtn wbtn-max" aria-label="Maximizar janela"></button>
+      <span class="win-ttl">Habilidades — skills.sh</span>
+    </div>
+    <div class="win-body" style="height:540px">
+      <div class="term skills-content">
+        <header class="skills-heading"><span class="skills-heading-icon" aria-hidden="true">&lt;/&gt;</span><div><p>ARTHUR / CONHECIMENTOS</p><h1>Habilidades técnicas</h1><span>Desenvolvimento, infraestrutura e suporte.</span></div></header>
+        <p class="kali-prompt" style="margin-bottom:8px"><span class="tb">┌──(</span><span class="tg">arthur㉿kali</span><span class="tb">)-[</span><span class="tt">~</span><span class="tb">]</span><br><span class="tb">└─</span><span class="tg">$</span> <span class="tt">./skills.sh --verbose</span></p>
+        <p class="skills-caption">Conhecimentos em prática e em desenvolvimento</p>
+        <div id="skills-list"></div>
+        <p class="kali-prompt" style="margin-top:10px"><span class="tb">┌──(</span><span class="tg">arthur㉿kali</span><span class="tb">)-[</span><span class="tt">~</span><span class="tb">]</span><br><span class="tb">└─</span><span class="tg">$</span> <span class="cur"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Projects window -->
+  <div class="win" id="win-projects" style="width:760px;left:180px;top:44px">
+    <div class="win-bar" data-win="projects">
+      <button class="wbtn wbtn-close" onclick="closeWin('projects')" aria-label="Fechar janela"></button>
+      <button class="wbtn wbtn-min"   onclick="minWin('projects')" aria-label="Minimizar janela"></button>
+      <button class="wbtn wbtn-max" aria-label="Maximizar janela"></button>
+      <span class="win-ttl">Thunar — /home/arthur/GitHub</span>
+    </div>
+    <div class="win-body" style="height:500px">
+      <div class="fm github-fm">
+        <div class="fm-bar github-toolbar">
+          <div class="fm-nav-group" aria-label="Navegação">
+            <button class="fm-nav">←</button>
+            <button class="fm-nav">→</button>
+            <button class="fm-nav">↑</button>
+          </div>
+          <div class="fm-path-box"><span class="path-muted">arthur</span><span>/</span><strong>GitHub</strong><span>/</span><span>THSimao</span></div>
+          <a class="github-profile-link" href="https://github.com/THSimao" target="_blank" rel="noopener noreferrer" aria-label="Abrir perfil THSimao no GitHub">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .7a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.56v-2.23c-3.22.7-3.9-1.37-3.9-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.74-1.55-2.57-.29-5.27-1.28-5.27-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.16 1.18a10.9 10.9 0 0 1 5.76 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.42-2.71 5.39-5.29 5.68.42.36.79 1.06.79 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z"/></svg>
+            <span>@THSimao</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <div class="github-layout">
+          <aside class="github-sidebar" aria-label="Locais">
+            <p class="sidebar-label">Locais</p>
+            <button type="button"><span>⌂</span> Início</button>
+            <button type="button"><span>◷</span> Recentes</button>
+            <button type="button" class="active"><span>◈</span> GitHub</button>
+            <div class="sidebar-divider"></div>
+            <p class="sidebar-label">Perfil</p>
+            <a href="https://github.com/THSimao" target="_blank" rel="noopener noreferrer"><span>●</span> THSimao</a>
+          </aside>
+          <main class="github-main">
+            <div class="github-heading">
+              <div>
+                <p class="github-eyebrow">GITHUB / REPOSITÓRIOS PÚBLICOS</p>
+                <h2>Projetos de Arthur</h2>
+              </div>
+              <span class="github-count">5 projetos</span>
+            </div>
+            <div class="fm-list github-project-grid" id="fm-list"></div>
+          </main>
+        </div>
+        <div class="fm-status github-status">
+          <span id="fm-status-l">5 projetos sincronizados</span>
+          <span class="github-online"><i></i> github.com/THSimao</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kali Tools window -->
+  <div class="win" id="win-tools" style="width:720px;left:190px;top:48px">
+    <div class="win-bar" data-win="tools">
+      <button class="wbtn wbtn-close" onclick="closeWin('tools')" aria-label="Fechar janela"></button>
+      <button class="wbtn wbtn-min" onclick="minWin('tools')" aria-label="Minimizar janela"></button>
+      <button class="wbtn wbtn-max" aria-label="Maximizar janela"></button>
+      <span class="win-ttl">Terminal — Laboratório interativo</span>
+    </div>
+    <div class="win-body" style="height:570px">
+      <div class="kali-tools-app">
+        <header class="tools-app-header">
+          <div class="kali-dragon-mark" aria-hidden="true">K</div>
+          <div>
+            <p class="tools-kicker">ARTHUR / SECURITY LAB</p>
+            <h2>Terminal</h2>
+            <p>Laboratório educativo. Sem acesso ao sistema ou à rede.</p>
+          </div>
+          <span class="tools-mode"><i></i> modo portfólio</span>
+        </header>
+        <div id="kali-lab"></div>
+        <footer class="tools-app-footer"><span>Laboratório local</span><span>Resultados simulados · Nenhuma varredura real</span></footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- Education window -->
+  <div class="win" id="win-education" style="width:690px;left:130px;top:48px">
+    <div class="win-bar" data-win="education">
+      <button class="wbtn wbtn-close" onclick="closeWin('education')" aria-label="Fechar janela"></button>
+      <button class="wbtn wbtn-min"   onclick="minWin('education')" aria-label="Minimizar janela"></button>
+      <button class="wbtn wbtn-max" aria-label="Maximizar janela"></button>
+      <span class="win-ttl">Mousepad — Curriculo_Arthur_Felix_Final.pdf</span>
+    </div>
+    <div class="win-body" style="height:500px">
+      <div class="te">
+        <div class="te-menu">
+          <span>Arquivo</span><span>Editar</span><span>Localizar</span><span>Exibir</span>
+        </div>
+        <div class="te-body">
+          <div class="resume-actions">
+            <a class="resume-link primary" href="assets/Curriculo_Arthur_Felix_Final.pdf" target="_blank" rel="noopener noreferrer">Abrir PDF <span>↗</span></a>
+            <a class="resume-link" href="assets/Curriculo_Arthur_Felix_Final.pdf" download>Baixar PDF <span>↓</span></a>
+          </div>
+          <header class="resume-profile" aria-label="Apresentação de Arthur">
+            <div class="resume-photo-frame">
+              <img class="resume-photo" src="assets/arthur-perfil.png" alt="Foto de Arthur Félix Campos Simão" width="941" height="1672" decoding="async">
+            </div>
+            <div class="resume-profile-copy">
+              <p class="resume-profile-label">CURRÍCULO / ARTHUR</p>
+              <h1>Arthur Félix Campos Simão</h1>
+              <p class="resume-profile-role">Estudante de Tecnologia da Informação</p>
+              <p class="resume-profile-focus">Infraestrutura · Redes · Suporte Técnico</p>
+              <p class="resume-profile-location">Belo Horizonte, MG</p>
+            </div>
+          </header>
+          <p class="tg" style="margin-bottom:4px">[PERFIL PROFISSIONAL]</p>
+          <p class="td">&nbsp;&nbsp;Estudante de TI com foco em infraestrutura, redes,</p>
+          <p class="td">&nbsp;&nbsp;suporte técnico e ambientes Windows e Linux.</p>
+          <p class="td" style="margin-bottom:16px">&nbsp;&nbsp;Facilidade para aprender e solucionar problemas técnicos.</p>
+          <p class="tg" style="margin-bottom:4px">[FORMAÇÃO ACADÊMICA]</p>
+          <p class="tt">Curso:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensino Médio Técnico em Tecnologia da Informação</p>
+          <p class="tt">Instituição:&nbsp;&nbsp;COTEMIG — em andamento</p>
+          <p class="tt">Cidade:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Belo Horizonte, MG</p>
+          <p class="tt" style="margin-bottom:16px">Período:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fev 2025 — Nov 2027</p>
+          <p class="tg" style="margin-bottom:4px">[COMPETÊNCIAS PRINCIPAIS]</p>
+          <p class="tt">&nbsp;&nbsp;- Hardware: montagem, manutenção e diagnóstico</p>
+          <p class="tt">&nbsp;&nbsp;- Windows, Ubuntu, Kali Linux e servidores Linux</p>
+          <p class="tt">&nbsp;&nbsp;- DNS, DHCP, IP, Ubiquiti/UniFi, MikroTik e WinBox</p>
+          <p class="tt" style="margin-bottom:16px">&nbsp;&nbsp;- C#, Python, HTML/CSS, banco de dados e Office</p>
+          <p class="tg" style="margin-bottom:4px">[CURSOS E CREDENCIAIS — 2026]</p>
+          <p class="tt">&nbsp;&nbsp;✓ Introduction to Cybersecurity — Cisco</p>
+          <p class="tt">&nbsp;&nbsp;✓ Computer Hardware Basics — Cisco</p>
+          <p class="tt">&nbsp;&nbsp;✓ Introduction to Modern AI — Cisco</p>
+          <p class="tt">&nbsp;&nbsp;✓ HTML Essentials — Cisco / JS Institute</p>
+          <p class="tt" style="margin-bottom:16px">&nbsp;&nbsp;✓ CSS Essentials — Cisco / JS Institute</p>
+          <p class="tg" style="margin-bottom:4px">[OBJETIVO PROFISSIONAL]</p>
+          <p class="td">&nbsp;&nbsp;Estágio ou jovem aprendiz em TI nas áreas de suporte,</p>
+          <p class="td">&nbsp;&nbsp;infraestrutura, redes, sistemas ou segurança da informação.</p>
+          <p class="tm">──────────────────────────────────────────</p>
+        </div>
+        <div class="te-footer">Currículo atualizado &nbsp;|&nbsp; 1 página &nbsp;|&nbsp; PDF &nbsp;|&nbsp; 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact window -->
+  <div class="win" id="win-contact" style="width:480px;left:260px;top:90px">
+    <div class="win-bar" data-win="contact">
+      <button class="wbtn wbtn-close" onclick="closeWin('contact')" aria-label="Fechar janela"></button>
+      <button class="wbtn wbtn-min"   onclick="minWin('contact')" aria-label="Minimizar janela"></button>
+      <button class="wbtn wbtn-max" aria-label="Maximizar janela"></button>
+      <span class="win-ttl">terminal — contact.sh</span>
+    </div>
+    <div class="win-body" style="height:440px">
+      <div class="term" style="overflow-y:auto">
+        <p class="kali-prompt" style="margin-bottom:10px"><span class="tb">┌──(</span><span class="tg">arthur㉿kali</span><span class="tb">)-[</span><span class="tt">~</span><span class="tb">]</span><br><span class="tb">└─</span><span class="tg">$</span> <span class="tt">./contact.sh</span></p>
+        <p class="tb" style="margin-bottom:2px"><span class="tg">&gt; </span>Contato direto:</p>
+        <p class="td" style="margin-bottom:2px">&nbsp;&nbsp;Email:&nbsp;&nbsp;arthursimaofc@gmail.com</p>
+        <p class="td" style="margin-bottom:14px">&nbsp;&nbsp;Tel:&nbsp;&nbsp;&nbsp;&nbsp;+55 31 99478-5345</p>
+        <p class="tb" style="margin-bottom:12px"><span class="tg">&gt; </span>Enviar mensagem:</p>
+        <div id="cf-ok" class="cf-ok">[+] Seu aplicativo de e-mail foi aberto.</div>
+        <form id="cf-form" onsubmit="submitContact(event)">
+          <p class="cf-label"><span class="tg">$ </span>nome:</p>
+          <input class="cf-inp" id="cf-name" required placeholder="Seu nome">
+          <p class="cf-label"><span class="tg">$ </span>email:</p>
+          <input class="cf-inp" id="cf-email" type="email" required placeholder="seu@email.com">
+          <p class="cf-label"><span class="tg">$ </span>mensagem:</p>
+          <textarea class="cf-inp" id="cf-msg" rows="3" required placeholder="Sua mensagem..." style="resize:none"></textarea>
+          <button type="submit" class="cf-btn">./enviar_mensagem</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /win-layer -->
+
+<!-- ── Taskbar ── -->
+<div id="taskbar">
+  <div class="tb-menu">
+    <button class="tb-menu-item kali-menu-trigger" id="kali-menu-trigger" type="button" aria-expanded="false" aria-controls="kali-menu">
+      <span class="panel-kali-icon" aria-hidden="true">K</span> Aplicações
+    </button>
+    <button class="tb-menu-item" type="button" onclick="openWin('tools')">Ferramentas</button>
+    <button class="tb-menu-item" type="button" onclick="openWin('projects')">Lugares</button>
+  </div>
+  <div id="tb-wins"></div>
+  <div id="tb-clock"></div>
+  <div class="tb-tray">
+    <span class="vpn-status" title="Interface VPN"><i></i> VPN</span>
+    <div class="workspace-switcher" aria-label="Áreas de trabalho">
+      <button type="button" class="active" aria-label="Área de trabalho 1">1</button>
+      <button type="button" aria-label="Área de trabalho 2">2</button>
+      <button type="button" aria-label="Área de trabalho 3">3</button>
+      <button type="button" aria-label="Área de trabalho 4">4</button>
+    </div>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b7a96" stroke-width="2">
+      <path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/>
+    </svg>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b7a96" stroke-width="2">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      <path d="M15.54 8.46a5 5 0 010 7.07"/>
+    </svg>
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b7a96" stroke-width="2">
+      <path d="M18.36 6.64a9 9 0 11-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Kali application menu -->
+<div id="kali-menu" class="kali-menu" role="dialog" aria-label="Menu de aplicações do Kali" aria-hidden="true">
+  <div class="kali-menu-profile">
+    <div class="kali-avatar profile-photo"><img src="assets/arthur-perfil.png" alt="Arthur Simão" width="941" height="1672"></div>
+    <div><strong>Arthur Simão</strong><span>arthur㉿kali</span></div>
+    <span class="rolling-badge">ROLLING</span>
+  </div>
+  <label class="kali-search">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+    <input id="kali-search-input" type="search" placeholder="Pesquisar aplicações..." autocomplete="off">
+    <kbd>/</kbd>
+  </label>
+  <div class="kali-menu-body">
+    <nav class="kali-categories" aria-label="Categorias de ferramentas">
+      <button type="button" class="active" data-kali-filter="all"><span>◆</span> Favoritos</button>
+      <button type="button" data-kali-filter="info"><span>01</span> Coleta de informações</button>
+      <button type="button" data-kali-filter="vulnerability"><span>02</span> Vulnerabilidades</button>
+      <button type="button" data-kali-filter="web"><span>03</span> Aplicações web</button>
+      <button type="button" data-kali-filter="passwords"><span>05</span> Senhas</button>
+      <button type="button" data-kali-filter="sniffing"><span>09</span> Sniffing &amp; spoofing</button>
+      <button type="button" data-kali-filter="forensics"><span>11</span> Forense</button>
+    </nav>
+    <div class="kali-app-list" id="kali-app-list">
+      <button type="button" data-category="info" data-app-name="Nmap"><span class="menu-app-icon blue">N</span><span><strong>Nmap</strong><small>Mapeamento de rede autorizado</small></span></button>
+      <button type="button" data-category="vulnerability" data-app-name="Greenbone"><span class="menu-app-icon green">G</span><span><strong>Greenbone</strong><small>Análise de vulnerabilidades</small></span></button>
+      <button type="button" data-category="web" data-app-name="Burp Suite"><span class="menu-app-icon orange">B</span><span><strong>Burp Suite</strong><small>Laboratório de aplicações web</small></span></button>
+      <button type="button" data-category="passwords" data-app-name="John"><span class="menu-app-icon purple">J</span><span><strong>John the Ripper</strong><small>Auditoria de senhas</small></span></button>
+      <button type="button" data-category="sniffing" data-app-name="Wireshark"><span class="menu-app-icon cyan">W</span><span><strong>Wireshark</strong><small>Análise de protocolos</small></span></button>
+      <button type="button" data-category="forensics" data-app-name="Autopsy"><span class="menu-app-icon gray">A</span><span><strong>Autopsy</strong><small>Forense digital</small></span></button>
+    </div>
+  </div>
+  <div class="kali-menu-footer"><span>Kali GNU/Linux Rolling</span><button type="button" id="kali-menu-close">Fechar menu</button></div>
+</div>
+
+<!-- ── Left Dock ── -->
+<div id="dock">
+  <button class="dock-profile profile-photo" onclick="openWin('education')" aria-label="Abrir currículo de Arthur" title="Arthur Simão · Meu currículo">
+    <img src="assets/arthur-perfil.png" alt="" width="941" height="1672">
+  </button>
+  <div class="dock-sep"></div>
+
+  <!-- Terminal -->
+  <button class="dock-btn" id="dock-neofetch" aria-label="User" onclick="openWin('neofetch')"
+    onmouseenter="showTip(event,'User')" onmouseleave="hideTip()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+    </svg>
+    <div class="dock-dot" style="background:#2ecc71;box-shadow:0 0 6px #2ecc71"></div>
+  </button>
+
+  <!-- Skills -->
+  <button class="dock-btn" id="dock-skills" aria-label="Habilidades" onclick="openWin('skills')"
+    onmouseenter="showTip(event,'Habilidades')" onmouseleave="hideTip()">
+    <img class="supplied-icon" src="assets/habilidades.jpg" alt="" width="28" height="28">
+    <div class="dock-dot" style="background:#4a9ff5;box-shadow:0 0 6px #4a9ff5"></div>
+  </button>
+
+  <!-- Kali Tools -->
+  <button class="dock-btn" id="dock-tools" aria-label="Terminal" onclick="openWin('tools')"
+    onmouseenter="showTip(event,'Terminal')" onmouseleave="hideTip()">
+    <img class="supplied-icon" src="assets/terminal.jpg" alt="" width="28" height="28">
+    <div class="dock-dot" style="background:#7ec8ff;box-shadow:0 0 6px #7ec8ff"></div>
+  </button>
+
+  <!-- Projects -->
+  <button class="dock-btn" id="dock-projects" onclick="openWin('projects')"
+    onmouseenter="showTip(event,'GitHub — Projetos')" onmouseleave="hideTip()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+    </svg>
+    <div class="dock-dot" style="background:#f39c12;box-shadow:0 0 6px #f39c12"></div>
+  </button>
+
+  <!-- Education -->
+  <button class="dock-btn" id="dock-education" onclick="openWin('education')"
+    onmouseenter="showTip(event,'Currículo')" onmouseleave="hideTip()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/>
+    </svg>
+    <div class="dock-dot" style="background:#e056fd;box-shadow:0 0 6px #e056fd"></div>
+  </button>
+
+  <!-- Contact -->
+  <button class="dock-btn" id="dock-contact" onclick="openWin('contact')"
+    onmouseenter="showTip(event,'Contato')" onmouseleave="hideTip()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+      <polyline points="22,6 12,13 2,6"/>
+    </svg>
+    <div class="dock-dot" style="background:#00c9ff;box-shadow:0 0 6px #00c9ff"></div>
+  </button>
+
+  <div class="dock-spacer"></div>
+  <div class="dock-sep"></div>
+
+  <button class="dock-btn" onclick="document.getElementById('kali-menu-trigger').click()" onmouseenter="showTip(event,'Menu do Kali')" onmouseleave="hideTip()" aria-label="Abrir menu do Kali">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+      <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+      <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+      <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+      <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+    </svg>
+  </button>
+</div>
+
+<!-- ── Context Menu ── -->
+<div id="ctx">
+  <button class="ctx-btn" onclick="openWin('neofetch');hideCtx()">Abrir User</button>
+  <button class="ctx-btn" onclick="openWin('tools');hideCtx()">Abrir Terminal</button>
+  <button class="ctx-btn">Novo Arquivo</button>
+  <div class="ctx-sep"></div>
+  <button class="ctx-btn" onclick="openWin('projects');hideCtx()">Projetos do GitHub</button>
+  <button class="ctx-btn" onclick="openWin('education');hideCtx()">Currículo atualizado</button>
+  <div class="ctx-sep"></div>
+  <button class="ctx-btn">Configurações do Sistema</button>
+</div>
+
+<div id="dock-tooltip"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  POLY BACKGROUND
+// ══════════════════════════════════════════════════════════
+(function drawBg() {
+  var c = document.getElementById('bg-canvas');
+  var ctx = c.getContext('2d');
+  var W = c.width  = window.innerWidth;
+  var H = c.height = window.innerHeight;
+
+  var COLS = 16, ROWS = 11;
+  var cw = W / COLS, ch = H / ROWS;
+
+  var pal = [
+    '#0a1628','#0d1f3c','#102447','#112b54','#143560','#163d6e',
+    '#174478','#1a4f8a','#1a5c8a','#156072','#0e6070','#0d6b7a',
+    '#0f7585','#137a8a','#1a8a9a','#1995a8','#1a6b9a','#2272a8',
+    '#1e5f8a','#163060','#1c3a70','#0a1f40'
+  ];
+
+  var pts = [];
+  for (var r = 0; r <= ROWS; r++) {
+    for (var col = 0; col <= COLS; col++) {
+      pts.push({
+        x: col * cw + (Math.random() - .5) * cw * .65,
+        y: r   * ch + (Math.random() - .5) * ch * .65
+      });
+    }
+  }
+
+  function idx(r, c) { return r * (COLS + 1) + c; }
+
+  for (var r = 0; r < ROWS; r++) {
+    for (var col = 0; col < COLS; col++) {
+      var tl = pts[idx(r, col)],   tr = pts[idx(r, col+1)];
+      var bl = pts[idx(r+1, col)], br = pts[idx(r+1, col+1)];
+
+      ctx.beginPath();
+      ctx.moveTo(tl.x, tl.y); ctx.lineTo(tr.x, tr.y); ctx.lineTo(br.x, br.y);
+      ctx.closePath();
+      ctx.fillStyle = pal[Math.floor(Math.random() * pal.length)];
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(tl.x, tl.y); ctx.lineTo(bl.x, bl.y); ctx.lineTo(br.x, br.y);
+      ctx.closePath();
+      ctx.fillStyle = pal[Math.floor(Math.random() * pal.length)];
+      ctx.fill();
+    }
+  }
+})();
+
+// ══════════════════════════════════════════════════════════
+//  CLOCK
+// ══════════════════════════════════════════════════════════
+function updateClock() {
+  var n = new Date();
+  var months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  var d = n.getDate().toString().padStart(2,'0') + '. ' + months[n.getMonth()];
+  var h = n.getHours().toString().padStart(2,'0');
+  var m = n.getMinutes().toString().padStart(2,'0');
+  document.getElementById('tb-clock').textContent = d + '  ' + h + ':' + m;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ══════════════════════════════════════════════════════════
+//  SKILLS DATA & RENDER
+// ══════════════════════════════════════════════════════════
+var SKILLS = [
+  { name:'C#',                     level:65, color:'#9b59b6' },
+  { name:'Python',                 level:35, color:'#3498db' },
+  { name:'HTML & CSS',             level:45, color:'#e67e22' },
+  { name:'Hardware & Software',    level:88, color:'#e74c3c' },
+  { name:'Windows & Linux',        level:75, color:'#27ae60' },
+  { name:'Redes & Infraestrutura', level:70, color:'#f39c12' },
+  { name:'Servidores Linux',       level:62, color:'#2ecc71' },
+  { name:'Cibersegurança',         level:35, color:'#4a9ff5' },
+  { name:'Banco de Dados',         level:40, color:'#1abc9c' },
+  { name:'Microsoft Office',       level:70, color:'#00c9ff' }
+];
+
+(function buildSkills() {
+  var list = document.getElementById('skills-list');
+  SKILLS.forEach(function(s, i) {
+    var lbl = s.level >= 80 ? 'avançado' : s.level >= 50 ? 'intermediário' : 'básico';
+    var row = document.createElement('div');
+    row.className = 'skill-row';
+    row.innerHTML =
+      '<div class="skill-head">' +
+        '<span class="s-name">' + s.name + '</span>' +
+        '<span class="s-badge" style="color:' + s.color + ';background:' + s.color + '18;border:1px solid ' + s.color + '40">' + lbl + '</span>' +
+      '</div>' +
+      '<div class="s-track">' +
+        '<div class="s-fill" id="sf-' + i + '" style="background:linear-gradient(90deg,' + s.color + ',' + s.color + 'bb);box-shadow:0 0 8px ' + s.color + '70"></div>' +
+      '</div>';
+    list.appendChild(row);
+  });
+})();
+
+function animateSkills() {
+  SKILLS.forEach(function(s, i) {
+    setTimeout(function() {
+      var el = document.getElementById('sf-' + i);
+      if (el) el.style.width = s.level + '%';
+    }, i * 90);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+//  PROJECTS DATA & RENDER
+// ══════════════════════════════════════════════════════════
+var PROJECTS = [
+  { name:'aplicacoes-csharp/', size:'4.2K', date:'Mar 12 09:14', type:'dir',  desc:'Sistemas OOP em C# com lógica estruturada' },
+  { name:'paginas-web/',       size:'1.8K', date:'Abr 03 14:22', type:'dir',  desc:'HTML semântico e CSS responsivo' },
+  { name:'banco-de-dados/',    size:'3.1K', date:'Mai 18 11:05', type:'dir',  desc:'ERDs, SQL e modelagem relacional' },
+  { name:'hardware-manut.sh',  size:'2.7K', date:'Jun 05 16:30', type:'file', desc:'Montagem e manutenção de computadores' },
+  { name:'README.md',          size:'1.1K', date:'Jun 10 08:00', type:'file', desc:'Documentação do portfólio' }
+];
+
+(function buildFM() {
+  var list = document.getElementById('fm-list');
+  var status = document.getElementById('fm-status-l');
+  var selRow = null;
+
+  PROJECTS.forEach(function(f) {
+    var row = document.createElement('div');
+    row.className = 'fm-row';
+    row.innerHTML =
+      '<span>' + (f.type==='dir' ? '📁' : '📄') + '</span>' +
+      '<span class="' + (f.type==='dir' ? 'fn-dir' : 'fn-file') + '">' + f.name + '</span>' +
+      '<span class="fm-meta">' + f.size + '</span>' +
+      '<span class="fm-meta">' + f.date + '</span>';
+
+    row.addEventListener('click', function() {
+      if (selRow) selRow.classList.remove('sel');
+      if (selRow === row) { selRow = null; status.textContent = '5 itens'; return; }
+      row.classList.add('sel');
+      selRow = row;
+      status.textContent = f.desc;
+    });
+    list.appendChild(row);
+  });
+})();
+
+// ══════════════════════════════════════════════════════════
+//  WINDOW SYSTEM
+// ══════════════════════════════════════════════════════════
+var winState = {
+  neofetch:  { open: false, minimized: false },
+  skills:    { open: false, minimized: false },
+  projects:  { open: false, minimized: false },
+  tools:     { open: false, minimized: false },
+  education: { open: false, minimized: false },
+  contact:   { open: false, minimized: false }
+};
+
+var WIN_LABELS = {
+  neofetch:  'User',
+  skills:    'skills.sh',
+  projects:  '~/GitHub',
+  tools:     'Terminal',
+  education: 'curriculo.pdf',
+  contact:   'contact.sh'
+};
+
+var topZ = 20;
+
+function openWin(id) {
+  var win = document.getElementById('win-' + id);
+  var state = winState[id];
+
+  topZ++;
+  win.style.zIndex = topZ;
+  win.classList.add('visible');
+  state.open = true;
+  state.minimized = false;
+
+  document.getElementById('dock-' + id).classList.add('open');
+  updateTaskbar();
+
+  // Trigger animations
+  if (id === 'neofetch') {
+    setTimeout(function() {
+      var art = document.getElementById('nf-art');
+      var info = document.getElementById('nf-info');
+      if (art) art.style.opacity = '1';
+      if (info) info.style.opacity = '1';
+    }, 120);
+  }
+  if (id === 'skills') {
+    setTimeout(animateSkills, 400);
+  }
+}
+
+function closeWin(id) {
+  var win = document.getElementById('win-' + id);
+  var state = winState[id];
+  win.classList.remove('visible');
+  state.open = false;
+  state.minimized = false;
+  document.getElementById('dock-' + id).classList.remove('open');
+  updateTaskbar();
+}
+
+function minWin(id) {
+  var win = document.getElementById('win-' + id);
+  var state = winState[id];
+  win.classList.remove('visible');
+  state.minimized = true;
+  updateTaskbar();
+}
+
+function focusWin(id) {
+  topZ++;
+  document.getElementById('win-' + id).style.zIndex = topZ;
+}
+
+function updateTaskbar() {
+  var bar = document.getElementById('tb-wins');
+  bar.innerHTML = '';
+  Object.keys(winState).forEach(function(id) {
+    var s = winState[id];
+    if (!s.open) return;
+    var btn = document.createElement('button');
+    btn.className = 'tb-win-btn' + (s.minimized ? ' minimized' : '');
+    btn.textContent = WIN_LABELS[id];
+    btn.onclick = function() {
+      if (s.minimized) {
+        openWin(id);
+      } else {
+        minWin(id);
+      }
+    };
+    bar.appendChild(btn);
+  });
+}
+
+// ── Drag ──
+document.querySelectorAll('.win-bar').forEach(function(bar) {
+  var winId = bar.getAttribute('data-win');
+  var win = document.getElementById('win-' + winId);
+  var dragging = false;
+  var ox = 0, oy = 0;
+
+  bar.addEventListener('mousedown', function(e) {
+    if (e.target.classList.contains('wbtn')) return;
+    dragging = true;
+    ox = e.clientX - win.offsetLeft;
+    oy = e.clientY - win.offsetTop;
+    focusWin(winId);
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!dragging) return;
+    win.style.left = (e.clientX - ox) + 'px';
+    win.style.top  = (e.clientY - oy) + 'px';
+  });
+
+  document.addEventListener('mouseup', function() { dragging = false; });
+});
+
+// ── Focus on click ──
+document.querySelectorAll('.win').forEach(function(win) {
+  var id = win.id.replace('win-', '');
+  win.addEventListener('mousedown', function() { focusWin(id); });
+});
+
+// ══════════════════════════════════════════════════════════
+//  CONTACT FORM
+// ══════════════════════════════════════════════════════════
+function submitContact(e) {
+  e.preventDefault();
+  var ok = document.getElementById('cf-ok');
+  var form = document.getElementById('cf-form');
+  ok.style.display = 'block';
+  document.getElementById('cf-name').value = '';
+  document.getElementById('cf-email').value = '';
+  document.getElementById('cf-msg').value = '';
+  setTimeout(function() { ok.style.display = 'none'; }, 4000);
+}
+
+// ══════════════════════════════════════════════════════════
+//  TOOLTIP
+// ══════════════════════════════════════════════════════════
+var tooltip = document.getElementById('dock-tooltip');
+
+function showTip(e, text) {
+  tooltip.textContent = text;
+  tooltip.style.display = 'block';
+  tooltip.style.top = (e.currentTarget.getBoundingClientRect().top + 12) + 'px';
+}
+function hideTip() { tooltip.style.display = 'none'; }
+
+// ══════════════════════════════════════════════════════════
+//  CONTEXT MENU
+// ══════════════════════════════════════════════════════════
+var ctx = document.getElementById('ctx');
+
+document.addEventListener('contextmenu', function(e) {
+  e.preventDefault();
+  if (e.target.closest('.win') || e.target.closest('#dock') || e.target.closest('#taskbar')) return;
+  ctx.style.display = 'block';
+  ctx.style.left = e.clientX + 'px';
+  ctx.style.top  = e.clientY + 'px';
+});
+
+document.addEventListener('click', hideCtx);
+function hideCtx() { ctx.style.display = 'none'; }
+
+// ══════════════════════════════════════════════════════════
+//  AUTO-OPEN NEOFETCH ON LOAD
+// ══════════════════════════════════════════════════════════
+setTimeout(function() { openWin('neofetch'); }, 700);
+</script>
+<script src="app.js"></script>
+<script src="lab.js"></script>
+</body>
+</html>
