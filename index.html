@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="description" content="Portfólio de Arthur Felix Campos Simão — estudante de TI, programação e suporte técnico.">
 <meta name="theme-color" content="#07111f">
 <title>Arthur Simão — Portfólio Kali Linux</title>
@@ -557,7 +557,7 @@
   .clr-row { display: flex; gap: 3px; margin-top: 5px; }
   .clr { width: 18px; height: 18px; border-radius: 2px; }
 </style>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=20260916-icons">
 </head>
 <body>
 <!-- Convert the monochrome launcher images into white silhouettes with real rendered alpha. -->
@@ -566,6 +566,10 @@
     <filter id="launcher-alpha" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">
       <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -0.2126 -0.7152 -0.0722 0 1"/>
       <feComponentTransfer><feFuncA type="linear" slope="1.05" intercept="-0.05"/></feComponentTransfer>
+    </filter>
+    <filter id="white-icon-alpha" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  .2126 .7152 .0722 0 0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="1.06" intercept="-0.03"/></feComponentTransfer>
     </filter>
   </defs>
 </svg>
@@ -607,20 +611,21 @@
 
 <!-- ── Desktop Icons ── -->
 <div id="desktop-icons">
+  <div class="mobile-welcome"><span>ARTHUR / PORTFÓLIO</span><h1>Bem-vindo ao meu desktop.</h1><p>Projetos, habilidades e um pouco sobre mim.<br>Toque em um aplicativo para explorar.</p></div>
   <div class="desk-icon skills-desktop" style="left:14px;top:428px" ondblclick="openWin('skills')">
     <img class="di-ico supplied-icon" src="assets/habilidades.jpg" alt="" width="44" height="44"><span class="di-lbl">Habilidades</span>
   </div>
   <div class="desk-icon" style="left:14px;top:18px" ondblclick="openWin('neofetch')">
-    <span class="di-ico">👤</span><span class="di-lbl">User</span>
+    <svg class="di-ico named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-perfil.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg><span class="di-lbl">User</span>
   </div>
   <div class="desk-icon" style="left:14px;top:100px" ondblclick="openWin('projects')">
-    <span class="di-ico">🗂️</span><span class="di-lbl">GitHub</span>
+    <svg class="di-ico named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-projetos.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg><span class="di-lbl">GitHub</span>
   </div>
   <div class="desk-icon" style="left:14px;top:182px" ondblclick="openWin('education')">
-    <span class="di-ico">📄</span><span class="di-lbl">Currículo.pdf</span>
+    <svg class="di-ico named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-curriculo.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg><span class="di-lbl">Currículo.pdf</span>
   </div>
   <div class="desk-icon" style="left:14px;top:264px" ondblclick="openWin('contact')">
-    <span class="di-ico">✉️</span><span class="di-lbl">Contato</span>
+    <svg class="di-ico named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-contato.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg><span class="di-lbl">Contato</span>
   </div>
   <div class="desk-icon kali-tools-desktop" style="left:14px;top:346px" ondblclick="openWin('tools')">
     <img class="di-ico supplied-icon" src="assets/terminal.jpg" alt="" width="44" height="44"><span class="di-lbl">Terminal</span>
@@ -767,7 +772,7 @@
     <div class="win-body" style="height:570px">
       <div class="kali-tools-app">
         <header class="tools-app-header">
-          <div class="kali-dragon-mark" aria-hidden="true">K</div>
+          <div class="kali-dragon-mark" aria-hidden="true"><img class="kali-brand-icon" src="assets/icon-kali.png" alt=""></div>
           <div>
             <p class="tools-kicker">ARTHUR / SECURITY LAB</p>
             <h2>Terminal</h2>
@@ -874,9 +879,10 @@
 
 <!-- ── Taskbar ── -->
 <div id="taskbar">
+  <button class="mobile-home" type="button" aria-label="Voltar à área de trabalho"><img class="kali-brand-icon" src="assets/icon-kali.png" alt=""> Início</button>
   <div class="tb-menu">
     <button class="tb-menu-item kali-menu-trigger" id="kali-menu-trigger" type="button" aria-expanded="false" aria-controls="kali-menu">
-      <span class="panel-kali-icon" aria-hidden="true">K</span> Aplicações
+      <span class="panel-kali-icon" aria-hidden="true"><img class="kali-brand-icon" src="assets/icon-kali.png" alt=""></span> Aplicações
     </button>
     <button class="tb-menu-item" type="button" onclick="openWin('tools')">Ferramentas</button>
     <button class="tb-menu-item" type="button" onclick="openWin('projects')">Lugares</button>
@@ -948,9 +954,7 @@
   <!-- Terminal -->
   <button class="dock-btn" id="dock-neofetch" aria-label="User" onclick="openWin('neofetch')"
     onmouseenter="showTip(event,'User')" onmouseleave="hideTip()">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-      <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
-    </svg>
+    <svg class="named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-perfil.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg>
     <div class="dock-dot" style="background:#2ecc71;box-shadow:0 0 6px #2ecc71"></div>
   </button>
 
@@ -971,31 +975,21 @@
   <!-- Projects -->
   <button class="dock-btn" id="dock-projects" onclick="openWin('projects')"
     onmouseenter="showTip(event,'GitHub — Projetos')" onmouseleave="hideTip()">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-      <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
-    </svg>
+    <svg class="named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-projetos.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg>
     <div class="dock-dot" style="background:#f39c12;box-shadow:0 0 6px #f39c12"></div>
   </button>
 
   <!-- Education -->
   <button class="dock-btn" id="dock-education" onclick="openWin('education')"
     onmouseenter="showTip(event,'Currículo')" onmouseleave="hideTip()">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-      <polyline points="14 2 14 8 20 8"/>
-      <line x1="16" y1="13" x2="8" y2="13"/>
-      <line x1="16" y1="17" x2="8" y2="17"/>
-    </svg>
+    <svg class="named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-curriculo.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg>
     <div class="dock-dot" style="background:#e056fd;box-shadow:0 0 6px #e056fd"></div>
   </button>
 
   <!-- Contact -->
   <button class="dock-btn" id="dock-contact" onclick="openWin('contact')"
     onmouseenter="showTip(event,'Contato')" onmouseleave="hideTip()">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-      <polyline points="22,6 12,13 2,6"/>
-    </svg>
+    <svg class="named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-contato.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg>
     <div class="dock-dot" style="background:#00c9ff;box-shadow:0 0 6px #00c9ff"></div>
   </button>
 
@@ -1272,6 +1266,7 @@ document.querySelectorAll('.win-bar').forEach(function(bar) {
   var ox = 0, oy = 0;
 
   bar.addEventListener('mousedown', function(e) {
+    if (window.matchMedia('(max-width: 760px)').matches) return;
     if (e.target.classList.contains('wbtn')) return;
     dragging = true;
     ox = e.clientX - win.offsetLeft;
@@ -1340,9 +1335,9 @@ function hideCtx() { ctx.style.display = 'none'; }
 // ══════════════════════════════════════════════════════════
 //  AUTO-OPEN NEOFETCH ON LOAD
 // ══════════════════════════════════════════════════════════
-setTimeout(function() { openWin('neofetch'); }, 700);
+setTimeout(function() { if (!window.matchMedia('(max-width: 760px)').matches) openWin('neofetch'); }, 700);
 </script>
-<script src="app.js"></script>
+<script src="app.js?v=20260916-mobile"></script>
 <script src="lab.js"></script>
 </body>
 </html>

@@ -4,6 +4,53 @@
   var motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var previousGeometry = {};
   var transitionTimer = {};
+  var mobileScreen = window.matchMedia('(max-width: 760px)');
+  function hideMobileWindows(exceptId) {
+    if (!mobileScreen.matches) return;
+    Object.keys(winState).forEach(function (id) {
+      if (id === exceptId) return;
+      clearTransition(id);
+      var item = winElement(id);
+      item.classList.remove('visible', 'is-focused', 'app-opening');
+      if (winState[id].open) winState[id].minimized = true;
+    });
+    updateTaskbar();
+  }
+  document.querySelector('.mobile-home').addEventListener('click', function () {
+    hideMobileWindows();
+    document.activeElement?.blur();
+  });
+  var dockLabels = {neofetch: 'User', skills: 'Habilidades', tools: 'Terminal', projects: 'Projetos', education: 'Currículo', contact: 'Contato'};
+  Object.keys(dockLabels).forEach(function (id) {
+    var button = document.getElementById('dock-' + id);
+    button.setAttribute('aria-label', dockLabels[id]);
+    var label = document.createElement('span');
+    label.className = 'mobile-dock-label';
+    label.textContent = dockLabels[id];
+    button.appendChild(label);
+  });
+  function updateMobileViewport() {
+    var viewport = window.visualViewport;
+    document.documentElement.style.setProperty('--viewport-height', (viewport ? viewport.height : window.innerHeight) + 'px');
+    document.body.classList.toggle('mobile-keyboard', mobileScreen.matches && !!viewport && window.innerHeight - viewport.height > 120 && document.activeElement.matches('input, textarea'));
+  }
+  window.visualViewport?.addEventListener('resize', updateMobileViewport);
+  window.addEventListener('resize', updateMobileViewport);
+  document.addEventListener('focusin', updateMobileViewport);
+  document.addEventListener('focusout', function () { window.setTimeout(updateMobileViewport, 100); });
+  mobileScreen.addEventListener('change', function () {
+    if (mobileScreen.matches) {
+      var visible = Array.from(document.querySelectorAll('.win.visible')).sort(function (a, b) { return Number(b.style.zIndex) - Number(a.style.zIndex); });
+      hideMobileWindows(visible[0]?.id.replace('win-', ''));
+    }
+    updateMobileViewport();
+  });
+  updateMobileViewport();
+  function syncMobileAccessibility() {
+    document.getElementById('desktop-icons').inert = mobileScreen.matches && !!document.querySelector('.win.visible');
+  }
+  new MutationObserver(syncMobileAccessibility).observe(document.getElementById('win-layer'), { subtree: true, attributes: true, attributeFilter: ['class'] });
+  mobileScreen.addEventListener('change', syncMobileAccessibility);
   var githubProjects = [
     {
       name: 'Landing-Page-SpayZone',
@@ -114,6 +161,7 @@
     var state = winState[id];
     if (!win || !state) return;
 
+    hideMobileWindows(id);
     clearTransition(id);
     topZ += 1;
     win.style.zIndex = topZ;
@@ -190,6 +238,7 @@
   };
 
   function toggleMaximize(id) {
+    if (mobileScreen.matches) return;
     var win = winElement(id);
     if (!win) return;
 
@@ -229,6 +278,9 @@
   });
 
   document.querySelectorAll('.desk-icon').forEach(function (icon) {
+    icon.addEventListener('click', function (event) {
+      if (mobileScreen.matches && event.detail <= 1) icon.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+    });
     icon.tabIndex = 0;
     icon.setAttribute('role', 'button');
     icon.setAttribute('aria-label', 'Abrir ' + (icon.querySelector('.di-lbl')?.textContent || 'aplicativo'));
