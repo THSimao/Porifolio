@@ -557,7 +557,7 @@
   .clr-row { display: flex; gap: 3px; margin-top: 5px; }
   .clr { width: 18px; height: 18px; border-radius: 2px; }
 </style>
-<link rel="stylesheet" href="styles.css?v=20260917-clean-icons">
+<link rel="stylesheet" href="styles.css?v=20260920-contact">
 </head>
 <body>
 <!-- Convert the monochrome launcher images into white silhouettes with real rendered alpha. -->
@@ -847,29 +847,33 @@
   </div>
 
   <!-- Contact window -->
-  <div class="win" id="win-contact" style="width:480px;left:260px;top:90px">
+  <div class="win" id="win-contact" style="width:500px;left:260px;top:64px">
     <div class="win-bar" data-win="contact">
       <button class="wbtn wbtn-close" onclick="closeWin('contact')" aria-label="Fechar janela"></button>
       <button class="wbtn wbtn-min"   onclick="minWin('contact')" aria-label="Minimizar janela"></button>
       <button class="wbtn wbtn-max" aria-label="Maximizar janela"></button>
       <span class="win-ttl">terminal — contact.sh</span>
     </div>
-    <div class="win-body" style="height:440px">
+    <div class="win-body" style="height:min(520px, calc(100vh - 150px))">
       <div class="term" style="overflow-y:auto">
         <p class="kali-prompt" style="margin-bottom:10px"><span class="tb">┌──(</span><span class="tg">arthur㉿kali</span><span class="tb">)-[</span><span class="tt">~</span><span class="tb">]</span><br><span class="tb">└─</span><span class="tg">$</span> <span class="tt">./contact.sh</span></p>
         <p class="tb" style="margin-bottom:2px"><span class="tg">&gt; </span>Contato direto:</p>
         <p class="td" style="margin-bottom:2px">&nbsp;&nbsp;Email:&nbsp;&nbsp;arthursimaofc@gmail.com</p>
         <p class="td" style="margin-bottom:14px">&nbsp;&nbsp;Tel:&nbsp;&nbsp;&nbsp;&nbsp;+55 31 99478-5345</p>
         <p class="tb" style="margin-bottom:12px"><span class="tg">&gt; </span>Enviar mensagem:</p>
-        <div id="cf-ok" class="cf-ok">[+] Seu aplicativo de e-mail foi aberto.</div>
-        <form id="cf-form" onsubmit="submitContact(event)">
-          <p class="cf-label"><span class="tg">$ </span>nome:</p>
-          <input class="cf-inp" id="cf-name" required placeholder="Seu nome">
-          <p class="cf-label"><span class="tg">$ </span>email:</p>
-          <input class="cf-inp" id="cf-email" type="email" required placeholder="seu@email.com">
-          <p class="cf-label"><span class="tg">$ </span>mensagem:</p>
-          <textarea class="cf-inp" id="cf-msg" rows="3" required placeholder="Sua mensagem..." style="resize:none"></textarea>
-          <button type="submit" class="cf-btn">./enviar_mensagem</button>
+        <div id="cf-status" class="cf-status" role="status" aria-live="polite" hidden></div>
+        <form id="cf-form" action="https://formspree.io/f/xgavakyq" method="POST" onsubmit="submitContact(event)">
+          <div class="cf-honeypot" aria-hidden="true">
+            <label>Não preencha este campo <input name="_gotcha" tabindex="-1" autocomplete="off"></label>
+          </div>
+          <label class="cf-label" for="cf-name"><span class="tg">$ </span>nome:</label>
+          <input class="cf-inp" id="cf-name" name="name" autocomplete="name" required maxlength="80" placeholder="Seu nome">
+          <label class="cf-label" for="cf-email"><span class="tg">$ </span>email:</label>
+          <input class="cf-inp" id="cf-email" name="email" type="email" inputmode="email" autocomplete="email" required maxlength="120" placeholder="seu@email.com">
+          <label class="cf-label" for="cf-msg"><span class="tg">$ </span>mensagem:</label>
+          <textarea class="cf-inp" id="cf-msg" name="message" rows="4" required minlength="10" maxlength="1500" placeholder="Escreva sua mensagem..." style="resize:vertical"></textarea>
+          <input type="hidden" name="_subject" value="Novo contato pelo portfólio de Arthur Simão">
+          <button type="submit" class="cf-btn" id="cf-submit"><span class="cf-btn-label">./enviar_mensagem</span></button>
         </form>
       </div>
     </div>
@@ -1294,17 +1298,6 @@ document.querySelectorAll('.win').forEach(function(win) {
 // ══════════════════════════════════════════════════════════
 //  CONTACT FORM
 // ══════════════════════════════════════════════════════════
-function submitContact(e) {
-  e.preventDefault();
-  var ok = document.getElementById('cf-ok');
-  var form = document.getElementById('cf-form');
-  ok.style.display = 'block';
-  document.getElementById('cf-name').value = '';
-  document.getElementById('cf-email').value = '';
-  document.getElementById('cf-msg').value = '';
-  setTimeout(function() { ok.style.display = 'none'; }, 4000);
-}
-
 // ══════════════════════════════════════════════════════════
 //  TOOLTIP
 // ══════════════════════════════════════════════════════════
@@ -1338,7 +1331,7 @@ function hideCtx() { ctx.style.display = 'none'; }
 // ══════════════════════════════════════════════════════════
 setTimeout(function() { if (!window.matchMedia('(max-width: 760px)').matches) openWin('neofetch'); }, 700);
 </script>
-<script src="app.js?v=20260916-mobile"></script>
+<script src="app.js?v=20260920-contact"></script>
 <script src="lab.js"></script>
 </body>
 </html>

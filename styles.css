@@ -952,6 +952,35 @@ textarea:focus-visible,
 }
 .named-icon image[href$="icon-contato.png"] { transform: scale(1.38); }
 
+/* Contact form: responsive Formspree states. */
+#cf-form { position: relative; width: 100%; }
+.cf-honeypot {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+.cf-status {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(110, 190, 255, .28);
+  border-radius: 7px;
+  background: rgba(13, 28, 43, .82);
+  color: #bdd6e8;
+  font: 500 .72rem/1.55 'JetBrains Mono', monospace;
+}
+.cf-status[hidden] { display: none; }
+.cf-status.is-loading { color: #8ed7ff; border-color: rgba(74, 159, 245, .4); }
+.cf-status.is-success { color: #8ee3b4; border-color: rgba(53, 208, 127, .42); background: rgba(22, 72, 49, .25); }
+.cf-status.is-error { color: #ffadb2; border-color: rgba(255, 95, 86, .42); background: rgba(91, 30, 35, .25); }
+.cf-btn:disabled { cursor: wait; opacity: .68; box-shadow: none; }
+#cf-msg { min-height: 92px; max-height: 180px; }
+
 /* Mobile desktop: touch-first launchers and one full-height app at a time. */
 .mobile-welcome, .mobile-home, .mobile-dock-label { display: none; }
 @media (max-width: 760px) {

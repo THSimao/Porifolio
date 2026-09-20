@@ -339,18 +339,46 @@
     });
   });
 
-  window.submitContact = function submitContactEnhanced(event) {
+  window.submitContact = async function submitContactEnhanced(event) {
     event.preventDefault();
-    var name = document.getElementById('cf-name').value.trim();
-    var email = document.getElementById('cf-email').value.trim();
-    var message = document.getElementById('cf-msg').value.trim();
-    var subject = encodeURIComponent('Contato pelo portfólio — ' + name);
-    var body = encodeURIComponent(message + '\n\nRemetente: ' + name + ' <' + email + '>');
-    window.location.href = 'mailto:arthursimaofc@gmail.com?subject=' + subject + '&body=' + body;
-    var ok = document.getElementById('cf-ok');
-    if (ok) {
-      ok.style.display = 'block';
-      window.setTimeout(function () { ok.style.display = 'none'; }, 4000);
+    var form = event.currentTarget;
+    var status = document.getElementById('cf-status');
+    var submit = document.getElementById('cf-submit');
+    var label = submit && submit.querySelector('.cf-btn-label');
+    var endpoint = form.getAttribute('action') || '';
+
+    function showContactStatus(message, type) {
+      if (!status) return;
+      status.hidden = false;
+      status.className = 'cf-status ' + type;
+      status.textContent = message;
+    }
+
+    if (!endpoint || endpoint.indexOf('SEU_FORM_ID') !== -1) {
+      showContactStatus('[-] Formspree ainda não foi conectado. Adicione o ID público do formulário.', 'is-error');
+      return;
+    }
+
+    if (submit) submit.disabled = true;
+    if (label) label.textContent = './enviando...';
+    showContactStatus('[*] Enviando mensagem com segurança...', 'is-loading');
+
+    try {
+      var response = await fetch(endpoint, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' }
+      });
+
+      if (!response.ok) throw new Error('Falha no envio');
+
+      form.reset();
+      showContactStatus('[+] Mensagem enviada. Responderei pelo e-mail informado.', 'is-success');
+    } catch (error) {
+      showContactStatus('[-] Não foi possível enviar agora. Tente novamente ou use o e-mail acima.', 'is-error');
+    } finally {
+      if (submit) submit.disabled = false;
+      if (label) label.textContent = './enviar_mensagem';
     }
   };
 
