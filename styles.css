@@ -944,6 +944,7 @@ textarea:focus-visible,
 .desk-icon svg.named-icon,
 .desk-icon:hover svg.named-icon { width: 46px; height: 46px; filter: drop-shadow(0 7px 12px rgba(0, 0, 0, .7)); }
 .dock-btn svg.named-icon { width: 30px; height: 30px; }
+.clean-app-icon { transform: scale(.72); }
 .named-icon image {
   transform: scale(1.52);
   transform-origin: center;

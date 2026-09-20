@@ -557,7 +557,7 @@
   .clr-row { display: flex; gap: 3px; margin-top: 5px; }
   .clr { width: 18px; height: 18px; border-radius: 2px; }
 </style>
-<link rel="stylesheet" href="styles.css?v=20260916-icons">
+<link rel="stylesheet" href="styles.css?v=20260917-clean-icons">
 </head>
 <body>
 <!-- Convert the monochrome launcher images into white silhouettes with real rendered alpha. -->
@@ -613,7 +613,7 @@
 <div id="desktop-icons">
   <div class="mobile-welcome"><span>ARTHUR / PORTFÓLIO</span><h1>Bem-vindo ao meu desktop.</h1><p>Projetos, habilidades e um pouco sobre mim.<br>Toque em um aplicativo para explorar.</p></div>
   <div class="desk-icon skills-desktop" style="left:14px;top:428px" ondblclick="openWin('skills')">
-    <img class="di-ico supplied-icon" src="assets/habilidades.jpg" alt="" width="44" height="44"><span class="di-lbl">Habilidades</span>
+    <svg class="di-ico named-icon clean-app-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.4 3.1 10 1h4l.6 2.1 1.8.8 1.9-1.1 2.8 2.8L20 7.5l.8 1.9L23 10v4l-2.2.6-.8 1.9 1.1 1.9-2.8 2.8-1.9-1.1-1.8.8L14 23h-4l-.6-2.1-1.8-.8-1.9 1.1-2.8-2.8L4 16.5l-.8-1.9L1 14v-4l2.2-.6L4 7.5 2.9 5.6l2.8-2.8 1.9 1.1z"/><circle cx="12" cy="12" r="3.4"/></svg><span class="di-lbl">Habilidades</span>
   </div>
   <div class="desk-icon" style="left:14px;top:18px" ondblclick="openWin('neofetch')">
     <svg class="di-ico named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-perfil.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg><span class="di-lbl">User</span>
@@ -622,13 +622,13 @@
     <svg class="di-ico named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-projetos.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg><span class="di-lbl">GitHub</span>
   </div>
   <div class="desk-icon" style="left:14px;top:182px" ondblclick="openWin('education')">
-    <svg class="di-ico named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-curriculo.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg><span class="di-lbl">Currículo</span>
+    <svg class="di-ico named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-curriculo.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg><span class="di-lbl">Currículo.pdf</span>
   </div>
   <div class="desk-icon" style="left:14px;top:264px" ondblclick="openWin('contact')">
     <svg class="di-ico named-icon" viewBox="0 0 1254 1254" aria-hidden="true"><image href="assets/icon-contato.png" width="1254" height="1254" filter="url(#white-icon-alpha)"/></svg><span class="di-lbl">Contato</span>
   </div>
   <div class="desk-icon kali-tools-desktop" style="left:14px;top:346px" ondblclick="openWin('tools')">
-    <img class="di-ico supplied-icon" src="assets/terminal.jpg" alt="" width="44" height="44"><span class="di-lbl">Terminal</span>
+    <svg class="di-ico named-icon clean-app-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="17" rx="3"/><path d="M2.5 8h19M6.5 12l2.5 2.5L6.5 17M12 17h5"/><circle cx="6" cy="5.8" r=".55" fill="#fff" stroke="none"/><circle cx="8.2" cy="5.8" r=".55" fill="#fff" stroke="none"/></svg><span class="di-lbl">Terminal</span>
   </div>
 </div>
 
@@ -961,14 +961,14 @@
   <!-- Skills -->
   <button class="dock-btn" id="dock-skills" aria-label="Habilidades" onclick="openWin('skills')"
     onmouseenter="showTip(event,'Habilidades')" onmouseleave="hideTip()">
-    <img class="supplied-icon" src="assets/habilidades.jpg" alt="" width="28" height="28">
+    <svg class="named-icon clean-app-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.4 3.1 10 1h4l.6 2.1 1.8.8 1.9-1.1 2.8 2.8L20 7.5l.8 1.9L23 10v4l-2.2.6-.8 1.9 1.1 1.9-2.8 2.8-1.9-1.1-1.8.8L14 23h-4l-.6-2.1-1.8-.8-1.9 1.1-2.8-2.8L4 16.5l-.8-1.9L1 14v-4l2.2-.6L4 7.5 2.9 5.6l2.8-2.8 1.9 1.1z"/><circle cx="12" cy="12" r="3.4"/></svg>
     <div class="dock-dot" style="background:#4a9ff5;box-shadow:0 0 6px #4a9ff5"></div>
   </button>
 
   <!-- Kali Tools -->
   <button class="dock-btn" id="dock-tools" aria-label="Terminal" onclick="openWin('tools')"
     onmouseenter="showTip(event,'Terminal')" onmouseleave="hideTip()">
-    <img class="supplied-icon" src="assets/terminal.jpg" alt="" width="28" height="28">
+    <svg class="named-icon clean-app-icon" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="17" rx="3"/><path d="M2.5 8h19M6.5 12l2.5 2.5L6.5 17M12 17h5"/><circle cx="6" cy="5.8" r=".55" fill="#fff" stroke="none"/><circle cx="8.2" cy="5.8" r=".55" fill="#fff" stroke="none"/></svg>
     <div class="dock-dot" style="background:#7ec8ff;box-shadow:0 0 6px #7ec8ff"></div>
   </button>
 
