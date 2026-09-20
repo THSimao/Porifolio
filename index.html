@@ -665,7 +665,7 @@
           <p><span class="tb" style="display:inline-block;min-width:72px">Kernel</span><span class="tm">: </span><span class="tt">Arthur Felix Campos Simão</span></p>
           <p><span class="tb" style="display:inline-block;min-width:72px">Uptime</span><span class="tm">: </span><span class="tt">Estudante desde Fev/2025</span></p>
           <p><span class="tb" style="display:inline-block;min-width:82px">Role</span><span class="tm">: </span><span class="tt">Infraestrutura · Redes · Suporte Técnico</span></p>
-          <p><span class="tb" style="display:inline-block;min-width:82px">Stack</span><span class="tm">: </span><span class="tt">C# · Python · HTML · CSS</span></p>
+          <p><span class="tb" style="display:inline-block;min-width:82px">Stack</span><span class="tm">: </span><span class="tt">C# · Python · HTML · CSS · JavaScript</span></p>
           <p><span class="tb" style="display:inline-block;min-width:82px">Systems</span><span class="tm">: </span><span class="tt">Windows · Ubuntu · Kali Linux</span></p>
           <p><span class="tb" style="display:inline-block;min-width:82px">Network</span><span class="tm">: </span><span class="tt">DNS · DHCP · MikroTik · UniFi</span></p>
           <p><span class="tb" style="display:inline-block;min-width:82px">Security</span><span class="tm">: </span><span class="tt">Fundamentos · Ambiente de estudos</span></p>
@@ -1092,7 +1092,8 @@ setInterval(updateClock, 1000);
 var SKILLS = [
   { name:'C#',                     level:65, color:'#9b59b6' },
   { name:'Python',                 level:35, color:'#3498db' },
-  { name:'HTML & CSS',             level:45, color:'#e67e22' },
+  { name:'HTML & CSS',             level:78, label:'intermediário–avançado', color:'#e67e22' },
+  { name:'JavaScript',             level:65, label:'intermediário', color:'#f7df1e' },
   { name:'Hardware & Software',    level:88, color:'#e74c3c' },
   { name:'Windows & Linux',        level:75, color:'#27ae60' },
   { name:'Redes & Infraestrutura', level:70, color:'#f39c12' },
@@ -1105,7 +1106,7 @@ var SKILLS = [
 (function buildSkills() {
   var list = document.getElementById('skills-list');
   SKILLS.forEach(function(s, i) {
-    var lbl = s.level >= 80 ? 'avançado' : s.level >= 50 ? 'intermediário' : 'básico';
+    var lbl = s.label || (s.level >= 80 ? 'avançado' : s.level >= 50 ? 'intermediário' : 'básico');
     var row = document.createElement('div');
     row.className = 'skill-row';
     row.innerHTML =
